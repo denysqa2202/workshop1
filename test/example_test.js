@@ -2,7 +2,9 @@ var client = require('webdriverio')
 var assert = require('assert')
 var should = require('should');
 
-var branchUrl = 'http://myurl.com'
+ var branchName = process.env.TRAVIS_BRANCH
+    var branchUrl = branchName
+var branchUrl = 'http://minions-' + branchName + '.herokuapp.com'
     
 describe('Home page tests', function() {
     it('Header is correct', function() {
