@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+- '6'
+
+addons:
+  apt:
+    sources:
+    - heroku
+    packages:
+    - heroku-toolbelt
+        
+install:
+- npm install
+
+script: true
+
+before_deploy:
+- cat .netrc >> $HOME/.netrc
+- chmod 0600 /home/travis/.netrc
+- heroku apps
+- heroku apps | grep -q minions-$TRAVIS_BRANCH || heroku apps:create minions-$TRAVIS_BRANCH
+- heroku git:remote -a minions-$TRAVIS_BRANCH
+
+deploy:
+  provider: heroku
+  api_key: 00788ce7-d774-4667-b7f6-448dc13fccac
+  app: minions-$TRAVIS_BRANCH
+  on: $TRAVIS_BRANCH
+
+after_deploy:
+- ./node_modules/.bin/wdio wdio.conf || travis_terminate 1
